@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  tekkenpt_user_Db:
+    image: postgres
+    restart: always
+    container_name: tekkenpt_Db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - "5434:5432"
