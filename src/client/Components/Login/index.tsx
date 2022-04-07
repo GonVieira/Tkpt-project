@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
+
 import {
   StyledLoginBody,
   SyledTitle,
@@ -10,49 +11,46 @@ import {
   StyledForm,
 } from "../GlobalStyledComponents";
 
-const Register = () => {
+const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
-    Axios.post("http://localhost:3001/user/create", data).then((res) => {
+    Axios.post(`http://localhost:3001/users/login`, data, {
+      withCredentials: true,
+    }).then((res) => {
       console.log(res.data);
-
       if (res.data.status === "Ok") {
-        console.log("Registration successful!");
-        navigate("/login");
-        return alert("Registration successful!");
+        console.log("Login successful");
+        navigate("/");
+        return alert("Login successful");
       }
-      alert("Registration failed!");
+      console.log("Login failed");
+      alert("Login failed");
     });
   };
 
   return (
     <>
       <StyledLoginBody>
-        <SyledTitle>Register</SyledTitle>
+        <SyledTitle>Login</SyledTitle>
         <StyledForm onSubmit={handleSubmit(onSubmit)}>
-          <StyledTextInput
-            {...register("name")}
-            type="text"
-            placeholder="name"
-          />
           <StyledTextInput
             {...register("email")}
             type="text"
-            placeholder="email"
             pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            placeholder="email"
           />
           <StyledTextInput
             {...register("password")}
             type="password"
             placeholder="password"
           />
-          <StyledSubmitButton type="submit">Register</StyledSubmitButton>
+          <StyledSubmitButton type="submit">Login</StyledSubmitButton>
         </StyledForm>
       </StyledLoginBody>
     </>
   );
 };
 
-export default Register;
+export default Login;

@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-export const StyledLink = styled(Link)`
+export const StyledLink = styled(NavLink)`
   text-decoration: none;
   color: #f4f4f4;
   padding: 10px;
@@ -11,7 +11,21 @@ export const StyledLink = styled(Link)`
     color: #ad0d31;
   }
 `;
-export const StyledHeaderContentDiv = styled.div`
+
+export const StyledLogoutButton = styled.button`
+  text-decoration: none;
+  color: #f4f4f4;
+  padding: 10px;
+  font-size: 26px;
+  background-color: #171e22;
+  border:none;
+
+  &:hover {
+    color: #ad0d31;
+  }
+`
+
+export const StyledHeaderContentDiv = styled.nav`
   display: flex;
   justify-content: space-around;
   align-items: center;

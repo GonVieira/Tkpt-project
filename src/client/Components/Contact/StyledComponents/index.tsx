@@ -7,6 +7,7 @@ export const StyledContactBody = styled.div`
   flex-direction: column;
   color: #f4f4f4;
   padding: 20px;
+  margin-top: 100px;
 `;
 
 export const StyledConectionsDiv = styled.div`
@@ -36,5 +37,6 @@ export const StyledAnchor = styled.a`
 
 export const SyledTitle = styled.h1`
   font-size: 50px;
-  padding: 10px;
+  padding: 30px;
+  margin-bottom: 25px;
 `;

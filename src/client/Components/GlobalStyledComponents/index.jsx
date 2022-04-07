@@ -1,5 +1,13 @@
 import styled from "styled-components";
 
+
+export const StyledForm = styled.form`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+`
+
 export const StyledLoginBody = styled.div`
   display: flex;
   justify-content: center;
@@ -33,5 +41,4 @@ export const StyledSubmitButton = styled.button`
   align-items: center;
   width: 100px;
   height: 50px;
-  margin: 10px;
 `

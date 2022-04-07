@@ -1,45 +1,77 @@
-import express from "express";
-
-require('@prisma/client');
-const app = express();
-require('dotenv').config();
-const route = require('./routes');
-const bodyParser = require('body-parser');
-const multer = require('multer');
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(bodyParser.json())
-
-// redirect to routes/index.js
-app.use('/', route);
-
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-    console.log(`server is running on port ${port}`);
-});
-
-
-
-{/** 
 import { PrismaClient } from "@prisma/client";
-const express = require("express");
-const PORT = process.env.PORT || 3001;
-const app = express();
+import cors from "cors";
+
+const jsonwebtoken = require("jsonwebtoken");
+const express = require("express"),
+  app = express();
+
 const prisma = new PrismaClient();
+const PORT = 3001;
 
-
-app.get("/api", (req: any, res: any) => {
-  res.json({ message: "Hello from server!" });
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
+app.use((req: any, res: any, next: any) => {
+  res.header("Access-Control-Allow-Headers", "Content-Type, Accept");
+  next();
 });
 
-//LAST THING IN THE FILE
-app.listen(PORT, async () => {
-  console.log(`Server listening on ${PORT}`);
- await prisma.user.create({
-    data:{
-    name:"joao",
-    email:"joaozinho@gmail.com",
-    pass:"12345"
+const jwtSecret = "ahsgkjdhlçiuytyghbkjnlmçkio1234564lkçjhgjdsab12342897912";
+
+
+
+//CREATE USER
+app.post("/user/create", async (req: any, res: any) => {
+  //CHECK IF VALUES ARE NOT EMPTY
+  if (
+    req.body.password === "" ||
+    req.body.name === "" ||
+    req.body.email === ""
+  ) {
+    res.send({ code: 400, status: "Bad request" });
+    return;
+  }
+
+  //CHECK IF EMAIL IS UNIQUE
+  const users = await prisma.user.findMany({
+    where: {
+      email: req.body.email,
     },
-  })
+  });
+
+  if (users.length !== 0) {
+    res.send({ code: 400, status: "Bad Request" });
+    return;
+  }
+
+  await prisma.user.create({
+    data: {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    },
+  });
+
+  res.send({ code: 200, status: "Ok" });
 });
-*/}
+
+//USER LOGIN
+app.post("/users/login", async (req: any, res: any) => {
+  const users = await prisma.user.findMany({
+    where: {
+      email: req.body.email,
+      password: req.body.password,
+    },
+  });
+  if (users.length !== 0) {
+    const token = jsonwebtoken.sign({ user: req.body.email }, jwtSecret);
+    res.cookie("isLogged", true);
+    res.cookie("token", token);
+    res.send({ code: 200, status: "Ok" });
+    return;
+  }
+  res.send({ code: 400, status: "Bad Request" });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});
