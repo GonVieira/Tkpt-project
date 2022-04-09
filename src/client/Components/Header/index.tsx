@@ -1,5 +1,5 @@
 import React from "react";
-import getCookie from "../Utils/";
+import getCookie from "../Utils";
 import { useNavigate } from "react-router-dom";
 import {
   StyledLink,
@@ -9,9 +9,30 @@ import {
   StyledImgContainer,
   StyledLogoutButton,
 } from "./HeaderStyledComponents";
+import Axios from "axios";
 
 const Header = () => {
   const navigate = useNavigate();
+
+  function validateToken() {
+    Axios.get(`http://localhost:3001/authenticate`, {
+      withCredentials: true,
+    }).then((res) => {
+      if (res.status !== 200) {
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c
+            .replace(/^ +/, "")
+            .replace(
+              /=.*/,
+              "=;expires=" + new Date().toUTCString() + ";path=/"
+            );
+        });
+        navigate("/");
+        alert("Invalid Access Token!");
+      }
+      return;
+    });
+  }
 
   return (
     <>
@@ -19,16 +40,19 @@ const Header = () => {
         <StyledContentTabs>
           <StyledLink to="/">Home</StyledLink>
           <StyledLink
+            onClick={() => validateToken()}
             to={getCookie("isLogged") === "true" ? "/about" : "/login"}
           >
             About
           </StyledLink>
           <StyledLink
+            onClick={() => validateToken()}
             to={getCookie("isLogged") === "true" ? "/contact" : "/login"}
           >
             Contact
           </StyledLink>
           <StyledLink
+            onClick={() => validateToken()}
             to={getCookie("isLogged") === "true" ? "/gallery" : "/login"}
           >
             Gallery
@@ -46,14 +70,21 @@ const Header = () => {
               <StyledLogoutButton
                 type="button"
                 onClick={() => {
-                  document.cookie = "isLogged=false";
+                  document.cookie.split(";").forEach((c) => {
+                    document.cookie = c
+                      .replace(/^ +/, "")
+                      .replace(
+                        /=.*/,
+                        "=;expires=" + new Date().toUTCString() + ";path=/"
+                      );
+                  });
                   navigate("/");
-                  alert("Logged out!")
+                  alert("Logged out!");
                 }}
               >
                 Logout
               </StyledLogoutButton>
-            </> 
+            </>
           ) : (
             <>
               <StyledLink to="login">Login</StyledLink>

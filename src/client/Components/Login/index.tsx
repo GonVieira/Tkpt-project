@@ -15,19 +15,21 @@ const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
+
   const onSubmit = (data: any) => {
     Axios.post(`http://localhost:3001/users/login`, data, {
       withCredentials: true,
-    }).then((res) => {
-      console.log(res.data);
-      if (res.data.status === "Ok") {
-        console.log("Login successful");
-        navigate("/");
-        return alert("Login successful");
-      }
-      console.log("Login failed");
-      alert("Login failed");
-    });
+    })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "OK") {
+          navigate("/");
+          return alert("Login successful");
+        }
+      })
+      .catch(() => {
+        alert("Wrong credentials!");
+      });
   };
 
   return (

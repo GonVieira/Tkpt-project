@@ -15,16 +15,14 @@ const Register = () => {
   const navigate = useNavigate();
 
   const onSubmit = (data: any) => {
+    console.log(data);
     Axios.post("http://localhost:3001/user/create", data).then((res) => {
       console.log(res.data);
-
-      if (res.data.status === "Ok") {
-        console.log("Registration successful!");
+      if (res.data === "OK") {
         navigate("/login");
         return alert("Registration successful!");
       }
-      alert("Registration failed!");
-    });
+    }).catch((err) => {console.log(err)});
   };
 
   return (
